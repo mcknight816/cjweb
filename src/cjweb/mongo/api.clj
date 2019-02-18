@@ -7,12 +7,13 @@
 (def ^:const html  {"Content-Type" "text/html"})
 
 (defn getQueryParameterMap [params]
-  {:page (if (nil? (:page params)) 1 (:page params))
-   :rows (if (nil? (:rows params)) 100 (:rows params))
-   :query (if (nil? (:q params)) {} (parse-string (:q params)))})
+
+  {:page (read-string (get params "page" "1"))
+   :rows (read-string (get params "rows" "100"))
+   :query (if (nil? (get params "q")) {} (parse-string (get params "q")))})
 
 (defn getQueryParameters [req]
-     (getQueryParameterMap (into {} (:params (assoc-query-params req "UTF-8")))  ))
+     (getQueryParameterMap  (:params (assoc-query-params req "UTF-8"))))
 
 (defn getJson [req]
    (slurp (:body req)))

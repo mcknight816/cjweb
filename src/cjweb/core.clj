@@ -8,7 +8,7 @@
 ;;todo add security
 (defn create-server "Start the web server" []
   (s/run-server (app) {:port 8080})
-  (log/info (str "Create a server on port 8080 " "http://localhost:8080")))
+  (log/info (str "Create a server on port 8080 " "http://localhost:8080/mongo")))
 
 (defn stop-server "Stop the web server" [server]
   (server :timeout 100))
