@@ -21,7 +21,7 @@ connection properties  "127.0.0.1" port 27017
  user=> (ns cjweb.core)
  cjweb.core=> (create-server)
  ````
- 
+ You can now browse to [your application][appurl]
 ## Example
 
 ### Create 
@@ -40,7 +40,7 @@ connection properties  "127.0.0.1" port 27017
  ````
  curl -d "{\"title\":\"Learning clojure\",\"isbn\":\"3424\",\"author\":\"Alex Mcknight\"}" -H "Content-Type: application/json" -X POST  http://localhost:8080/mongo/library/book
 ````
-You can now browse to [your application][appurl]
+
 
 ### Searching
 
