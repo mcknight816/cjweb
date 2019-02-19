@@ -18,15 +18,12 @@
   "set the key values of a mongo document whose _id == id,
   with the incoming document key values "
   (let [ db (mg/get-db @conn database)]
-  (mc/update-by-id db collection id (merge document (get_doc_by_id db collection id))) document))
+  (mc/update-by-id db collection id (merge document (get_doc_by_id database collection id))) document))
 
 (defn save_update_doc [database collection document]
   "if the incoming document contains the _id we pass the document
   to the update function otherwise we save a new document to the
   mongo database and assign a generated random _id to it"
-
-  ;(get document "_id")
-
   (if (contains? document "_id")
     (update_doc database collection (get document "_id") document)
     (let [ db (mg/get-db @conn database)]
