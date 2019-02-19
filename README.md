@@ -5,7 +5,7 @@ A Clojure application designed to get you quickly ramped up with a running Web S
 This is a great tool for prototyping backend json data for front end web applications.
 
 This application does not contain any security and runs on http://localhost:8080 it also uses the default mongo
-connections properties  "127.0.0.1" port 27017
+connection properties  "127.0.0.1" port 27017
  
 ## Dependencies 
   1. [Java JRE 8][java] 
@@ -14,17 +14,31 @@ connections properties  "127.0.0.1" port 27017
   3. [Leiningen][leiningen]
 
 ## Usage
-from the terminal
+ from the command line
  ````
  lein repl
  user=> (load "cjweb/core")
  user=> (ns cjweb.core)
  cjweb.core=> (create-server)
  ````
+ 
+ ## Example
+ The below curl will create a database called library and a collection called book.
+ 
+ It will also store a book record represented by the json in the book collection of your mongo db.
+ 
+ from the command line
+ ```
+ curl --header "Content-Type: application/json" \
+   --request POST \
+   --data '{"title":"Learning clojure","isbn":"342-323-4","author":"Alex Mcknight"}' \
+   http://localhost:8080/library/book
+```
+ 
 You can now browse to [your application][appurl]
 
 ## Testing
-from the terminal
+ from the command line
  ````
  lein test 
   ````
