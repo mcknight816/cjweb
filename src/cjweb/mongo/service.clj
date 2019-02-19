@@ -8,11 +8,17 @@
 ;;todo allow for setting mongo username and password
 (def conn (atom (mg/connect)))
 
+
+(defn get_doc_by_id [database collection id]
+  "retrieve a document from the mongo database whose _id == id"
+  (let [ db (mg/get-db @conn database)]
+    (mc/find-one-as-map db collection { :_id id })))
+
 (defn update_doc [database collection id document]
   "set the key values of a mongo document whose _id == id,
   with the incoming document key values "
   (let [ db (mg/get-db @conn database)]
-  (mc/update-by-id db collection id document) document))
+  (mc/update-by-id db collection id (merge document (get_doc_by_id db collection id))) document))
 
 (defn save_update_doc [database collection document]
   "if the incoming document contains the _id we pass the document
@@ -25,11 +31,6 @@
     (update_doc database collection (get document "_id") document)
     (let [ db (mg/get-db @conn database)]
       (mc/insert-and-return db collection (merge document {:_id (str (UUID/randomUUID))})))))
-
-(defn get_doc_by_id [database collection id]
-  "retrieve a document from the mongo database whose _id == id"
-  (let [ db (mg/get-db @conn database)]
-    (mc/find-one-as-map db collection { :_id id })))
 
 (defn delete_doc_by_id [database collection id]
   "remove a document from the mongo database whose _id == id"
