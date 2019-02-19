@@ -21,8 +21,8 @@ connections properties  "127.0.0.1" port 27017
 
 Copyright © 2019
 
-Distributed under the Eclipse Public License either version 1.0 or (at
-your option) any later version.
+Distributed under the [Eclipse Public License](http://www.eclipse.org/legal/epl-v10.html) (the same as Clojure) or
+the [Apache Public License 2.0](http://www.apache.org/licenses/LICENSE-2.0.html).
 
 [java]:http://www.oracle.com/technetwork/java/javase/downloads/jre8-downloads-2133155.html
 [mongo]:https://www.mongodb.com/download-center#community
