@@ -29,7 +29,7 @@ connection properties  "127.0.0.1" port 27017
  
  from the command line
  ```
- curl --header "Content-Type: application/json" --request POST --data '{"title":"Learning clojure","isbn":"342-323-4","author":"Alex Mcknight"}' http://localhost:8080/mongo/library/book
+ curl -d '{"title":"Learning clojure","isbn":"3424","author":"Alex Mcknight"}' -H "Content-Type: application/json" -X POST  http://localhost:8080/mongo/library/book
 ```
  
 You can now browse to [your application][appurl]
