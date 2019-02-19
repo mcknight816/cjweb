@@ -22,7 +22,10 @@ connection properties  "127.0.0.1" port 27017
  cjweb.core=> (create-server)
  ````
  
- ## Example
+## Example
+
+### Create 
+
  The below curl will create a database called library and a collection called book.
  
  It will also store a book record represented by the json in the book collection of your mongo db.
@@ -30,15 +33,47 @@ connection properties  "127.0.0.1" port 27017
  from the command line
  
  Mac
- ```
+ ````
  curl -d '{"title":"Learning clojure","isbn":"3424","author":"Alex Mcknight"}' -H "Content-Type: application/json" -X POST  http://localhost:8080/mongo/library/book
-```
+````
  Windows
- ```
+ ````
  curl -d "{\"title\":\"Learning clojure\",\"isbn\":\"3424\",\"author\":\"Alex Mcknight\"}" -H "Content-Type: application/json" -X POST  http://localhost:8080/mongo/library/book
-```
+````
 You can now browse to [your application][appurl]
 
+### Searching
+
+optional parameters
+
+page = what page of the data should we retrieve
+
+rows = how many records of the data should we retrieve
+
+q = the valid mongo json query 
+ 
+
+````
+curl -H "Content-Type: application/json" -X GET  http://localhost:8080/mongo/library/book?page=1&rows=10&q={"title":{"bw":"Learn"}}
+````
+
+
+### Update
+Update is the same as save except that an id must be included that references the record in question
+````
+curl -d '{"_id":"ID_OF_THE_RECORD",title":"Learning clojure","isbn":"3424","author":"Alexander Mcknight"}' -H "Content-Type: application/json" 
+````
+
+### Get by ID
+````
+curl -H "Content-Type: application/json" -X GET  http://localhost:8080/mongo/library/book/ID_OF_THE_RECORD
+````
+
+### Remove by ID
+
+````
+curl -H "Content-Type: application/json" -X DELETE http://localhost:8080/mongo/library/book/ID_OF_THE_RECORD
+````
 ## Testing
  from the command line
  ````
