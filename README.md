@@ -10,8 +10,11 @@ connections properties  "127.0.0.1" port 27017
 ## Dependencies 
   1. [Java JRE 8][java] 
   2. [Mongo DB][mongo]
+  3. [Clojure][clojure]
+  3. [Leiningen][leiningen]
 
 ## Usage
+from the terminal
  ````
  lein repl
  user=> (load "cjweb/core")
@@ -29,3 +32,5 @@ the [Apache Public License 2.0](http://www.apache.org/licenses/LICENSE-2.0.html)
 [java]:http://www.oracle.com/technetwork/java/javase/downloads/jre8-downloads-2133155.html
 [mongo]:https://www.mongodb.com/download-center#community
 [appurl]:http://localhost:8080/mongo
+[leiningen]:https://leiningen.org/
+[clojure]:https://clojure.org/guides/getting_started
