@@ -22,6 +22,12 @@ from the terminal
  cjweb.core=> (create-server)
  ````
 You can now browse to [your application][appurl]
+
+## Testing
+from the terminal
+ ````
+ lein test 
+  ````
 ## License
 
 Copyright © 2019
