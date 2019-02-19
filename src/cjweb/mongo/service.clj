@@ -19,7 +19,7 @@
   to the update function otherwise we save a new document to the
   mongo database and assign a generated random _id to it"
 
-  (get document "_id")
+  ;(get document "_id")
 
   (if (contains? document "_id")
     (update_doc database collection (get document "_id") document)
