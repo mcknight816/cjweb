@@ -28,10 +28,14 @@ connection properties  "127.0.0.1" port 27017
  It will also store a book record represented by the json in the book collection of your mongo db.
  
  from the command line
+ Mac
  ```
  curl -d '{"title":"Learning clojure","isbn":"3424","author":"Alex Mcknight"}' -H "Content-Type: application/json" -X POST  http://localhost:8080/mongo/library/book
 ```
- 
+ Windows
+ ```
+ curl -d "{\"title\":\"Learning clojure\",\"isbn\":\"3424\",\"author\":\"Alex Mcknight\"}" -H "Content-Type: application/json" -X POST  http://localhost:8080/mongo/library/book
+```
 You can now browse to [your application][appurl]
 
 ## Testing
