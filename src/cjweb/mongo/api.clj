@@ -7,7 +7,6 @@
 (def ^:const html  {"Content-Type" "text/html"})
 
 (defn getQueryParameterMap [params]
-
   {:page (read-string (get params "page" "1"))
    :rows (read-string (get params "rows" "100"))
    :query (if (nil? (get params "q")) {} (parse-string (get params "q")))})
