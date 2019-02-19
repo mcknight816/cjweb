@@ -28,7 +28,7 @@
        :body (generate-string (mongo_service/save_update_doc db col (parse-string (getJson req)) ))})
     (POST "/mongo/:db/:col/:id" [db col id :as req]
       {:status 200 :headers json
-       :body (generate-string (mongo_service/update_doc db col id req))})
+       :body (generate-string (mongo_service/update_doc db col id (parse-string (getJson req)) ))})
     (GET "/mongo/:db/:col" [db col :as req]
       {:status 200 :headers json
        :body (generate-string (mongo_service/find_docs db col (getQueryParameters req)))})
