@@ -18,7 +18,7 @@
   "set the key values of a mongo document whose _id == id,
   with the incoming document key values "
   (let [ db (mg/get-db @conn database)]
-  (mc/update-by-id db collection id (merge document (get_doc_by_id database collection id))) document))
+  (mc/update-by-id db collection id (merge (get_doc_by_id database collection id) document)) document))
 
 (defn save_update_doc [database collection document]
   "if the incoming document contains the _id we pass the document
