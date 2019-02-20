@@ -4,7 +4,7 @@
             [monger.operators :refer :all]
             [monger.query :refer :all])
   (:import (java.util UUID) ))
-;;todo allow for external configuration of the mongo db server address
+;;todo allow for external configuration of the mongo db server address possibly this library https://github.com/clojure/tools.cli
 ;;todo allow for setting mongo username and password
 (def conn (atom (mg/connect)))
 
