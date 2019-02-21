@@ -1,7 +1,7 @@
 (ns cjweb.core (:require [org.httpkit.server :as s]
                          [clojure.tools.logging :as log]
                          [cjweb.mongo.api :as mongo_api]))
-;;todo allow for external configuration of the port
+;;todo allow for external configuration of the port possibly this library https://github.com/clojure/tools.cli
 ;;todo add security
 (defonce server (atom nil))
 
