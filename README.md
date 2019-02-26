@@ -19,7 +19,7 @@ connection properties  "127.0.0.1" port 27017
  lein repl
  user=> (load "cjweb/core")
  user=> (ns cjweb.core)
- cjweb.core=> (create-server)
+ cjweb.core=> (start-server)
  ````
  You can now browse to [your application][appurl]
 ## Example
