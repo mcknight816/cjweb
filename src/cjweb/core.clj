@@ -5,16 +5,21 @@
 ;;todo add security
 (defonce server (atom nil))
 
+
+(defn remove-slash
+  "Remove trailing slash from string"
+  [uri] (if (and (not (= "/" uri))
+        (.endsWith uri "/"))
+          (subs uri 0 (dec (count uri)))
+                           uri))
+
 (defn ignore-trailing-slash
   "Modifies the request uri before calling the handler.
   Removes a single trailing slash from the end of the uri if present."
   [handler]
   (fn [request]
     (let [uri (:uri request)]
-      (handler (assoc request :uri (if (and (not (= "/" uri))
-                                            (.endsWith uri "/"))
-                                     (subs uri 0 (dec (count uri)))
-                                     uri))))))
+      (handler (update request :uri remove-slash)))))
 
 (defn app "Attach API routes to our web application" []
     (ignore-trailing-slash  (mongo_api/mongo-routes )))
