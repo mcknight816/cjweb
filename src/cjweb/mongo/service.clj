@@ -23,8 +23,8 @@
   "if the incoming document contains the _id we pass the document
   to the update function otherwise we save a new document to the
   mongo database and assign a generated random _id to it"
-  (if (contains? document "_id")
-    (update-doc database collection (get document "_id") document)
+  (if (contains? document :_id)
+    (update-doc database collection (:_id document) document)
     (let [ db (mg/get-db @conn database)]
       (mc/insert-and-return db collection (merge document {:_id (str (UUID/randomUUID))})))))
 
