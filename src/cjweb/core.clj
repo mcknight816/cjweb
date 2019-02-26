@@ -17,11 +17,11 @@
                                      uri))))))
 
 (defn app "Attach API routes to our web application" []
-    (ignore-trailing-slash  (mongo_api/mongo_routes )))
+    (ignore-trailing-slash  (mongo_api/mongo-routes )))
 
-(defn create-server "Start the web server" []
+(defn start-server "Start the web server" []
   (reset! server (s/run-server (#'app) {:port 8080}))
-  (log/info (str "Create a server on port 8080 " "http://localhost:8080/mongo")))
+  (log/info (str "Start a server on port 8080 " "http://localhost:8080/mongo")))
 
 (defn stop-server []
   (when-not (nil? @server)
@@ -29,8 +29,8 @@
     (reset! server nil)))
 
 (defn -main "Start the app" []
-  (create-server ))
+  (start-server ))
 
-(comment (create-server))
+(comment (start-server))
 (comment (stop-server))
 
