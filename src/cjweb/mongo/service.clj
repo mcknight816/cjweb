@@ -33,24 +33,23 @@
   (let [ db (mg/get-db @conn database)]
    (mc/remove-by-id db collection id)) id)
 
-(defn default-search-criteria [search_criteria]
-  "If a parameter of the search criteria does not exist then set it to a default value"
-  { :page (if (nil? (:page search_criteria)) 1 (:page search_criteria))
-    :rows (if (nil? (:rows search_criteria)) 100 (:rows search_criteria))
-    :query (if (nil? (:query search_criteria)) {} (:query search_criteria))})
 ;;todo add sort order , sort index and selected fields
 (defn find-docs
   "This is a paginated query. To query all keys named tags that have the values functional or object-oriented, your query
   might look like this {:tags {$all [\"functional\" \"object-oriented\"]}} more info can be found here
   http://clojuremongodb.info/articles/querying.html"
   ([database collection] (find-docs database collection {}))
-  ([database collection search_criteria]
-   (let [db (mg/get-db @conn database)]
-     {:totalrecords (mc/count db collection (:query (default-search-criteria search_criteria)))
-      :currpage     (:page (default-search-criteria search_criteria))
-      :totalpages   (+ 1 (long (/ (mc/count db collection (:query (default-search-criteria search_criteria))) (:rows (default-search-criteria search_criteria)))))
-      :rows         (with-collection db collection (find (:query (default-search-criteria search_criteria)))
-                           (paginate :page (:page (default-search-criteria search_criteria))
-                                     :per-page  (:rows (default-search-criteria search_criteria))))
-        }
-     )))
+  ([database collection search-criteria]
+   (let [db (mg/get-db @conn database)
+         {:keys [query page rows]
+          :or {page 1
+               rows 100
+               query {}}} search-criteria
+         num-records (mc/count db collection query)]
+     {:totalrecords num-records
+      :currpage     page
+      :totalpages   (inc (quot num-records rows))
+      :rows         (with-collection db collection
+                                     (find query)
+                                     (paginate :page page
+                                               :per-page rows))})))
