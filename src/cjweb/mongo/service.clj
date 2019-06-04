@@ -1,6 +1,7 @@
 (ns cjweb.mongo.service
   (:require [monger.core :as mg]
             [monger.collection :as mc]
+            [clojure.walk :as walk]
             [monger.query :refer [with-collection paginate find]])
   (:import (java.util UUID) ))
 ;;todo allow for external configuration of the mongo db server address
@@ -15,8 +16,10 @@
 (defn update-doc [database collection id document]
   "set the key values of a mongo document whose _id == id,
   with the incoming document key values "
-  (let [ db (mg/get-db @conn database)]
-  (mc/update-by-id db collection id (merge (get-doc-by-id database collection id) document)) document))
+  (let [ db (mg/get-db @conn database)
+        existing-doc (walk/stringify-keys (get-doc-by-id database collection id))
+        merged-doc (merge existing-doc document)]
+  (mc/update-by-id db collection id merged-doc) merged-doc))
 
 (defn save-update-doc [database collection document]
   "if the incoming document contains the _id we pass the document
@@ -25,8 +28,9 @@
   (let [id (get document "_id")]
     (if id
       (update-doc database collection id document)
-      (let [ db (mg/get-db @conn database)]
-        (mc/insert-and-return db collection (merge document {:_id (str (UUID/randomUUID))}))))))
+      (let [ db (mg/get-db @conn database)
+            doc (merge document {:_id (str (UUID/randomUUID))})]
+        (mc/insert-and-return db collection doc)))))
 
 (defn delete-doc-by-id [database collection id]
   "remove a document from the mongo database whose _id == id"
