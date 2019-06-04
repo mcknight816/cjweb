@@ -13,7 +13,7 @@
   (println "ID of deleted doc" (mongo_service/delete-doc-by-id db col (:_id  rec)))
   (println "Doc List After Delete" (mongo_service/find-docs db col)))
 
-(deftest mongo-service-test
+
+
+(comment
   (mongodb-crud-test "mycooldb" "info" {:name "alex" :age 45}))
-
-

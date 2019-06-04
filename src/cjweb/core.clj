@@ -5,7 +5,6 @@
 ;;todo add security
 (defonce server (atom nil))
 
-
 (defn remove-slash
   "Remove trailing slash from string"
   [uri] (if (and (not (= "/" uri))
@@ -21,8 +20,32 @@
     (let [uri (:uri request)]
       (handler (update request :uri remove-slash)))))
 
+
+(defn allow-cross-origin
+  "Middleware function to allow cross origin requests from browsers.
+  When a browser attempts to call an API from a different domain, it makes an OPTIONS request first to see the server's
+  cross origin policy.  So, in this method we return that when an OPTIONs request is made.
+  Additionally, for non OPTIONS requests, we need to just returm the 'Access-Control-Allow-Origin' header or else
+  the browser won't read the data properly.
+  The above notes are all based on how Chrome works. "
+  ([handler]
+   (allow-cross-origin handler "*"))
+  ([handler allowed-origins]
+   (fn [request]
+     (if (= (request :request-method) :options)
+       (-> (handler request)
+           (assoc-in [:headers "access-control-allow-origin"] allowed-origins)
+           (assoc-in [:headers "access-control-allow-methods"] "GET,POST,DELETE,OPTIONS")
+           (assoc-in [:headers "access-control-allow-headers"] "access-control-allow-origin,x-requested-with,content-type,cache-control,origin,accept,authorization")
+           (assoc-in [:headers "Access-Control-Allow-Credentials"] true)
+           (assoc :status 200))
+       (-> (handler request)
+           (assoc-in [:headers "access-control-allow-origin"] allowed-origins))))))
+
 (defn app "Attach API routes to our web application" []
-    (ignore-trailing-slash  (mongo_api/mongo-routes )))
+  (-> (mongo_api/mongo-routes)
+      (allow-cross-origin)
+      (ignore-trailing-slash)))
 
 (defn start-server "Start the web server" []
   (reset! server (s/run-server (#'app) {:port 8080}))

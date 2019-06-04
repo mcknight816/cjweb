@@ -32,7 +32,7 @@
   (generate-string (mongo_service/delete-doc-by-id db col id)))
 
 (def ^:const json-content  {"Content-Type" "application/json"})
-(def ^:const html-content  {"Content-Type" "text/html"})
+(def ^:const html-content  {"Content-Type" "text/html" })
 
 (defn mongo-routes [] "CRUD Routes for the Mongo database.
  db refers to the name of the mongo database,

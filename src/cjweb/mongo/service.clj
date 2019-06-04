@@ -7,7 +7,6 @@
 ;;todo allow for setting mongo username and password
 (def conn (atom (mg/connect)))
 
-
 (defn get-doc-by-id [database collection id]
   "retrieve a document from the mongo database whose _id == id"
   (let [ db (mg/get-db @conn database)]
@@ -23,10 +22,11 @@
   "if the incoming document contains the _id we pass the document
   to the update function otherwise we save a new document to the
   mongo database and assign a generated random _id to it"
-  (if (contains? document :_id)
-    (update-doc database collection (:_id document) document)
-    (let [ db (mg/get-db @conn database)]
-      (mc/insert-and-return db collection (merge document {:_id (str (UUID/randomUUID))})))))
+  (let [id (get document "_id")]
+    (if id
+      (update-doc database collection id document)
+      (let [ db (mg/get-db @conn database)]
+        (mc/insert-and-return db collection (merge document {:_id (str (UUID/randomUUID))}))))))
 
 (defn delete-doc-by-id [database collection id]
   "remove a document from the mongo database whose _id == id"
