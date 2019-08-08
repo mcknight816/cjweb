@@ -29,6 +29,4 @@
 ***REMOVED***
  ***amazing***
 
-  (+ 1 1)
-
   (mongodb-crud-test "mycooldb" "info" {:name "alex" :age 45}))
