@@ -29,6 +29,4 @@
                                                                              :events ["blah_blah.blah"]}},
                                               :client-id "canadawater"})
 
-  (+ 1 1)
-
   (mongodb-crud-test "mycooldb" "info" {:name "alex" :age 45}))
