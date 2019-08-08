@@ -16,20 +16,4 @@
 
 
 (comment
-
-***REMOVED***
-***REMOVED***
-***REMOVED***
-***REMOVED***
-***REMOVED***
-***REMOVED***
-***REMOVED***
-***REMOVED***
-***REMOVED***
-***REMOVED***
- ***amazing***
-
-   ***Good Data***
-  (* 2 2)
-
   (mongodb-crud-test "mycooldb" "info" {:name "alex" :age 45}))
