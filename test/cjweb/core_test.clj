@@ -16,4 +16,17 @@
 
 
 (comment
+
+  (rn-kv.api/add "private_client" "canadawater" {:external-config {:event-push {:authorization {:get-bearer-token-url "https://login.microsoftonline.com/111111/oauth2/token/",
+                                                                                             :strategy "oauth",
+                                                                                             :form-data {:client_id "1111",
+                                                                                                         :client_secret "1111",
+                                                                                                         :grant-type "client_credentials",
+                                                                                                         :resource "1111"},
+                                                                                             :token "1111"},
+                                                                             :path "1111",
+                                                                             :method "POST",
+                                                                             :events ["blah_blah.blah"]}},
+                                              :client-id "canadawater"})
+
   (mongodb-crud-test "mycooldb" "info" {:name "alex" :age 45}))
