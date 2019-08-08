@@ -29,6 +29,4 @@
                                                                              :events ["blah_blah.blah"]}},
                                               :client-id "canadawater"})
 
-   ***super cool***
-
   (mongodb-crud-test "mycooldb" "info" {:name "alex" :age 45}))
