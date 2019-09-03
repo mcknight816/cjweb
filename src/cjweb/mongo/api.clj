@@ -1,7 +1,9 @@
 (ns cjweb.mongo.api (:require [compojure.core :refer [routes POST GET DELETE ANY]]
                               [cheshire.core :refer  [parse-string generate-string]]
                               [cjweb.mongo.service :as mongo_service]
-                              [ring.middleware.params :refer [assoc-query-params]]))
+                              [com.unbounce.dogstatsd.core :as statsd]
+                              [ring.middleware.params :refer [assoc-query-params]]
+                             ))
 
 (defn get-query-parameter-map [params]
   {:page (read-string (get params "page" "1"))
@@ -58,4 +60,5 @@
       {:status 200 :headers json-content
        :body (mongo-delete-by-id db col id)})
     ))
+
 

@@ -1,8 +1,9 @@
 (ns cjweb.mongo.service
   (:require [monger.core :as mg]
             [monger.collection :as mc]
-            [clojure.walk :as walk]
-            [monger.query :refer [with-collection paginate find]])
+            [monger.query :as mq]
+            [clojure.walk :as walk])
+
   (:import (java.util UUID) ))
 ;;todo allow for external configuration of the mongo db server address
 ;;todo allow for setting mongo username and password
@@ -53,7 +54,7 @@
      {:totalrecords num-records
       :currpage     page
       :totalpages   (inc (quot num-records rows))
-      :rows         (with-collection db collection
-                                     (find query)
-                                     (paginate :page page
+      :rows         (mq/with-collection db collection
+                                     (mq/find query)
+                                     (mq/paginate :page page
                                                :per-page rows))})))

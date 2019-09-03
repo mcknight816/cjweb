@@ -1,5 +1,7 @@
 (ns cjweb.core (:require [org.httpkit.server :as s]
                          [clojure.tools.logging :as log]
+                         [com.unbounce.dogstatsd.core :as statsd]
+                         [com.unbounce.dogstatsd.ring :as dogstatsd.ring]
                          [cjweb.mongo.api :as mongo_api]))
 ;;todo allow for external configuration of the port possibly this library https://github.com/clojure/tools.cli
 ;;todo add security
@@ -19,7 +21,6 @@
   (fn [request]
     (let [uri (:uri request)]
       (handler (update request :uri remove-slash)))))
-
 
 (defn allow-cross-origin
   "Middleware function to allow cross origin requests from browsers.
@@ -42,13 +43,16 @@
        (-> (handler request)
            (assoc-in [:headers "access-control-allow-origin"] allowed-origins))))))
 
+
 (defn app "Attach API routes to our web application" []
   (-> (mongo_api/mongo-routes)
+      (dogstatsd.ring/wrap-http-metrics)
       (allow-cross-origin)
       (ignore-trailing-slash)))
 
 (defn start-server "Start the web server" []
-  (reset! server (s/run-server (#'app) {:port 8080}))
+  (statsd/setup! :host "127.0.0.1" :port 8125 :prefix "cjweb.app")
+  (reset! server (s/run-server (#'app) {:port 8081}))
   (log/info (str "Start a server on port 8080 " "http://localhost:8080/mongo")))
 
 (defn stop-server []
@@ -57,8 +61,17 @@
     (reset! server nil)))
 
 (defn -main "Start the app" []
-  (start-server ))
+  (start-server))
 
 (comment (start-server))
 (comment (stop-server))
+
+(comment
+  (statsd/setup! :host "127.0.0.1" :port 8125 :prefix "cjweb.app")
+  (statsd/event {:title "foo" :text "things are bad\nfoo"} nil)
+  (statsd/increment "foo.bar")
+
+  (statsd/service-check  {:name "hi" :status :warning} nil)
+  (statsd/sservice-check {:name "hi" :status :ok :timestamp 10 :check-run-id 123 :message "foo" :hostname "blah"} nil)
+  )
 
