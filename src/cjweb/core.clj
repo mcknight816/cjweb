@@ -2,7 +2,12 @@
                          [clojure.tools.logging :as log]
                          [com.unbounce.dogstatsd.core :as statsd]
                          [com.unbounce.dogstatsd.ring :as dogstatsd.ring]
-                         [cjweb.mongo.api :as mongo_api]))
+                         [cjweb.mongo.service :as mongo_service]
+                         [cjweb.mongo.api :as mongo_api]
+                         [taoensso.carmine :as car]
+                         [datadog-apm-clj-wrapper.core :as apm])
+  (:import
+    ))
 ;;todo allow for external configuration of the port possibly this library https://github.com/clojure/tools.cli
 ;;todo add security
 (defonce server (atom nil))
@@ -46,7 +51,7 @@
 
 (defn app "Attach API routes to our web application" []
   (-> (mongo_api/mongo-routes)
-      (dogstatsd.ring/wrap-http-metrics)
+      (dogstatsd.ring/wrap-http-metrics {:tags #{"CJWEBHTTP"} :sample-rate 0.3})
       (allow-cross-origin)
       (ignore-trailing-slash)))
 
@@ -66,12 +71,58 @@
 (comment (start-server))
 (comment (stop-server))
 
+(defn mongodb-crud-test [db col doc]
+  (def rec (mongo_service/save-update-doc db col doc))
+  (println "Doc Before Save" doc)
+  (println "Doc After Save" rec)
+  (def rec  (mongo_service/save-update-doc db col (assoc rec :name "fred" :age 25)))
+  (println "Doc Get By ID After Update" (mongo_service/get-doc-by-id db col (:_id rec)))
+  (println "Doc List Before Delete where name is fred" (mongo_service/find-docs db col {:query {:name "fred"}}))
+  (println "ID of deleted doc" (mongo_service/delete-doc-by-id db col (:_id  rec)))
+  (println "Doc List After Delete" (mongo_service/find-docs db col)))
+
+
+;;"redis-dev.relaystaging.com"
+;;"master.rn-dev-tls.tr1knz.use2.cache.amazonaws.com"
+(defn myconn []
+  {:pool {} :spec {:host "master.rn-dev-tls.tr1knz.use2.cache.amazonaws.com"
+                   :port 6379
+                   :db 1
+                   :ssl-fn :default}})
+
+(defn redis-put [k,v]
+  (car/wcar (myconn) (car/set k v)) v)
+
+(defn redis-putnx [k,v]
+  (car/wcar (myconn) (car/setnx k v)) v)
+
+(defn redis-get [k]
+  (car/wcar (myconn) (car/get k)))
+
+(defn redis-del [k]
+  (car/wcar (myconn) (car/del k)))
+
+
+
 (comment
-  (statsd/setup! :host "127.0.0.1" :port 8125 :prefix "cjweb.app")
+
+
+  (redis-put " 12345-123344-231213-434234 " ,"fred")
+  (redis-get " 12345-123344-231213-434234 ")
+
+
+
+  (stop-server)
+  (start-server)
+  (mongodb-crud-test "mycooldb" "info" {:name "alex" :age 45})
+  (statsd/setup! :host "localhost" :port 8125 :prefix "cjweb.app")
   (statsd/event {:title "foo" :text "things are bad\nfoo"} nil)
   (statsd/increment "foo.bar")
 
   (statsd/service-check  {:name "hi" :status :warning} nil)
-  (statsd/sservice-check {:name "hi" :status :ok :timestamp 10 :check-run-id 123 :message "foo" :hostname "blah"} nil)
+  (statsd/service-check {:name "hi" :status :ok :timestamp 10 :check-run-id 123 :message "foo" :hostname "blah"} nil)
+  (statsd/shutdown!)
+  (apm/instrumentation "sum-two-numbers" #(+ 4 1))
+
   )
 
