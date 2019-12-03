@@ -41,6 +41,8 @@
  col refers to the collection name,
  id refers the document in question"
   (routes
+    (GET "/favicon.ico" [] {:status 200 :headers html-content
+                            :body  "<H1>Welcome to the Mongo API</H1>"})
     (ANY "/mongo" []
       {:status 200 :headers html-content
        :body  "<H1>Welcome to the Mongo API</H1>"})

@@ -102,12 +102,24 @@
 (defn redis-del [k]
   (car/wcar (myconn) (car/del k)))
 
-
+(defn transform
+  [all-readings]
+  (reduce (fn [out readings]
+            (map conj out readings))
+          (map vector (first all-readings))
+          (rest all-readings)))
 
 (comment
 
+  (transform [[1 2 3.2] [1.1 2.05 3.24]])
 
-  (redis-put " 12345-123344-231213-434234 " ,"fred")
+  (redis-put " 12345-123344-231213-434234 " ,
+             {:name "Alex"
+              :description "a list of properties"
+              :port 1234
+              :host "localhost"
+              :password "someEncryptedData"})
+
   (redis-get " 12345-123344-231213-434234 ")
 
 
