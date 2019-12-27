@@ -1,4 +1,4 @@
-(ns cjweb.mongo.service
+(ns cjweb.couchbase.service
   (:require [monger.core :as mg]
             [monger.collection :as mc]
             [monger.query :as mq]
@@ -20,13 +20,13 @@
   (let [ db (mg/get-db @conn database)
         existing-doc (walk/stringify-keys (get-doc-by-id database collection id))
         merged-doc (merge existing-doc document)]
-  (mc/update-by-id db collection id merged-doc) merged-doc))
+    (mc/update-by-id db collection id merged-doc) merged-doc))
 
 (defn save-update-doc [database collection document]
   "if the incoming document contains the _id we pass the document
   to the update function otherwise we save a new document to the
   mongo database and assign a generated random _id to it"
-  (let [id (:_id document)]
+  (let [id (get document "_id")]
     (if id
       (update-doc database collection id document)
       (let [ db (mg/get-db @conn database)
@@ -36,7 +36,7 @@
 (defn delete-doc-by-id [database collection id]
   "remove a document from the mongo database whose _id == id"
   (let [ db (mg/get-db @conn database)]
-   (mc/remove-by-id db collection id)) id)
+    (mc/remove-by-id db collection id)) id)
 
 ;;todo add sort order , sort index and selected fields
 (defn find-docs
@@ -55,6 +55,6 @@
       :currpage     page
       :totalpages   (inc (quot num-records rows))
       :rows         (mq/with-collection db collection
-                                     (mq/find query)
-                                     (mq/paginate :page page
-                                               :per-page rows))})))
+                                        (mq/find query)
+                                        (mq/paginate :page page
+                                                     :per-page rows))})))

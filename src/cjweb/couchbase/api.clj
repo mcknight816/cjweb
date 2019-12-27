@@ -1,6 +1,6 @@
-(ns cjweb.couchdb.api (:require [compojure.core :refer [routes POST GET DELETE ANY]]
+(ns cjweb.couchbase.api (:require [compojure.core :refer [routes POST GET DELETE ANY]]
                               [cheshire.core :refer  [parse-string generate-string]]
-                              [cjweb.mongo.service :as couch-db-service]
+                              [cjweb.mongo.service :as couchbase-service]
                               [ring.middleware.params :refer [assoc-query-params]]))
 
 (defn get-query-parameter-map [params]
@@ -15,54 +15,54 @@
   (slurp (:body req)))
 
 ;; Couch DB CRUD Functions
-(defn couch-db-save-update
+(defn couchbase-save-update
   "Create or Update - returns the created or updated record as json"
   [db col req]
-  (generate-string (couch-db-service/save-update-doc db col (parse-string (get-json req)))))
+  (generate-string (couchbase-service/save-update-doc db col (parse-string (get-json req)))))
 
-(defn couch-db-search
+(defn couchbase-search
   "Read / Search Many - returns a list of records as json"
   [db col req]
-  (generate-string (couch-db-service/find-docs db col (get-query-parameters req))))
+  (generate-string (couchbase-service/find-docs db col (get-query-parameters req))))
 
-(defn couch-db-get-by-id
+(defn couchbase-get-by-id
   "Read One - returns one json record"
   [db col id]
-  (generate-string (couch-db-service/get-doc-by-id db col id)))
+  (generate-string (couchbase-service/get-doc-by-id db col id)))
 
-(defn couch-db-update-by-id
+(defn couchbase-update-by-id
   "Update - returns the updated record as json"
   [db col id req]
-  (generate-string (couch-db-service/update-doc db col id (parse-string (get-json req)))))
+  (generate-string (couchbase-service/update-doc db col id (parse-string (get-json req)))))
 
-(defn couch-db-delete-by-id [db col id]
+(defn couchbase-delete-by-id [db col id]
   "Delete One - returns the id of the deleted record as json"
-  (generate-string (couch-db-service/delete-doc-by-id db col id)))
+  (generate-string (couchbase-service/delete-doc-by-id db col id)))
 
 (defonce ^:const json-content  {"Content-Type" "application/json"})
 (defonce ^:const html-content  {"Content-Type" "text/html"})
 
-(defn couch-db-routes [] "CRUD Routes for the Mongo database.
- db refers to the name of the mongo database,
+(defn couchbase-routes [] "CRUD Routes for the Couch db database.
+ db refers to the name of the Couch db database,
  col refers to the collection name,
  id refers the document in question"
   (routes
-    (ANY "/couchdb" []
+    (ANY "/couchbase" []
       {:status 200 :headers html-content
        :body  "<H1>Welcome to the Couch DB API</H1>"})
-    (POST "/couchdb/:db/:col" [db col :as req]
+    (POST "/couchbase/:db/:col" [db col :as req]
       {:status 200 :headers json-content
-       :body (couch-db-save-update db col req)})
-    (POST "/couchdb/:db/:col/:id" [db col id :as req]
+       :body (couchbase-save-update db col req)})
+    (POST "/couchbase/:db/:col/:id" [db col id :as req]
       {:status 200 :headers json-content
-       :body (couch-db-update-by-id db col id req)})
-    (GET "/couchdb/:db/:col" [db col :as req]
+       :body (couchbase-update-by-id db col id req)})
+    (GET "/couchbase/:db/:col" [db col :as req]
       {:status 200 :headers json-content
-       :body (couch-db-search db col req)})
-    (GET "/couchdb/:db/:col/:id" [db col id]
+       :body (couchbase-search db col req)})
+    (GET "/couchbase/:db/:col/:id" [db col id]
       {:status 200 :headers json-content
-       :body (couch-db-get-by-id db col id) })
-    (DELETE "/couchdb/:db/:col/:id" [db col id]
+       :body (couchbase-get-by-id db col id) })
+    (DELETE "/couchbase/:db/:col/:id" [db col id]
       {:status 200 :headers json-content
-       :body (couch-db-delete-by-id db col id)})
+       :body (couchbase-delete-by-id db col id)})
     ))
